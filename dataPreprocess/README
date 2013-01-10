@@ -1,0 +1,8 @@
+Implementation notes:
+=====================
+1.For postagger, we utilize Stanford log-linear postagger.
+As it is implemented using Java, we place related Java
+code project Postagger in ~/workspace directory.
+
+2.We use java to implement the client for computing semantic
+similarity between word pairs with Wikipedia knowledge base.

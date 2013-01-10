@@ -9,7 +9,9 @@
 # Author: anthonylife
 # Date:   1/8/2013
 
-import os
+import os, re
+
+from globalSetting import POS, REG_EXP
 
 class GenCorpusWordPair:
     ''' The class used to generate all word pairs in the
@@ -21,6 +23,7 @@ class GenCorpusWordPair:
         self.docsuffix = docsuffix
         self.words_pair = set([])
         self.doclist = []
+        self.pattern = re.compile(REG_EXP)
 
     def getdoclist(self):
         for rootdir in self.srcrootdir:
@@ -42,13 +45,22 @@ class GenCorpusWordPair:
         for line in open(doc):
             res = line.strip('\n').split(' ')
             for word in res:
-                if word not in doc_words:
+                word = self.filter_punc(word)
+                if word and word not in doc_words:
                     for src_word in doc_words:
                         word_pair = src_word+'_'+word if src_word < word \
                                 else word+'_'+src_word
                         if word_pair not in self.words_pair:
                             self.words_pair.add(word_pair)
                     doc_words.add(word)
+
+    def filter_punc(self, word):
+        if word.find('_') != -1:
+            biparts = word.split('_')
+            # remove punctuation
+            if biparts[1] in POS and self.pattern.match(biparts[0]):
+                return biparts[0]
+        return None
 
     def output(self, output_file):
         wfd = open(output_file, 'w')
@@ -67,9 +79,9 @@ class GenCorpusWordPair:
 def main():
 #==========
     # variables setting
-    srcdir = ["../../data/sourcedata/Hulth2003/Train/",\
-            "../../data/sourcedata/Hulth2003/Test/", \
-            "../../data/sourcedata/Hulth2003/Validation/"]
+    srcdir = ["../cleanData/Hulth2003/Train/",\
+            "../cleanData/Hulth2003/Test/", \
+            "../cleanData/Hulth2003/Validation/"]
     file_suf = "abstr"
     outputfile = "../cleanData/Hulth2003/words_pair.dict"
 
@@ -106,5 +118,5 @@ def test():
     pair_gentor.output(outputfile)
 
 if __name__ == "__main__":
-    #main()
-    test()
+    main()
+    #test()
