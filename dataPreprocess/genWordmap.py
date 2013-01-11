@@ -122,5 +122,22 @@ def main():
     wordmapGenerator.genwordmap()
     wordmapGenerator.output_wordmap()
 
+def test():
+    # files path setting
+    dir_text_file = ["../unitTest/dataPreprocess/genWordmap/"]
+    output_wordmap_file = "../unitTest/dataPreprocess/genWordmap/word.txt"
+    pos_sets = POS
+    reg_exp = REG_EXP
+    docsuffix = "abstr"
+    kpdocsuffix = "keyword"
+
+    # wordmap generation
+    wordmapGenerator = WordmapGenerator(dir_text_file,\
+            output_wordmap_file, pos_sets, reg_exp,\
+            docsuffix, kpdocsuffix)
+    wordmapGenerator.genwordmap()
+    wordmapGenerator.output_wordmap()
+
 if __name__ == "__main__":
     main()
+    #test()

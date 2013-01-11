@@ -1,17 +1,21 @@
 #!/usr/bin/env python
 #encoding=utf8
 
+# author:anthonylife
+# date: 1/11/2013
+
 import sys
 sys.path.append('../')
 
 from stemmer.porterStemmer import PorterStemmer
 
-
-if __name__ == "__main__":
+def main(test=None):
     # files setting
     semwiki_file = "../cleanData/Hulth2003/words_pair.simvalue.dict"
     clean_semwiki_file = "../cleanData/Hulth2003/words_pair.wiki.clean.dict"
-
+    if test:
+        semwiki_file = "../unitTest/dataPreprocess/cleanWikiminerResult/input.txt"
+        clean_semwiki_file = "../unitTest/dataPreprocess/cleanWikiminerResult/output.txt"
     # stemmer
     stemmer = PorterStemmer()
 
@@ -43,3 +47,7 @@ if __name__ == "__main__":
 
     print "Raw number of items: %d. After cleaning, number of items: %d.\n"\
             % (raw_numitems, new_numitems)
+
+
+if __name__ == "__main__":
+    main("test")
