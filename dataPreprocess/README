@@ -6,3 +6,40 @@ code project Postagger in ~/workspace directory.
 
 2.We use java to implement the client for computing semantic
 similarity between word pairs with Wikipedia knowledge base.
+
+
+Function introduction:
+======================
+cleanWikiminerResult.py:
+    **As I didn't do words cleaning (stop words removal, 
+      change to lower case, stemming) when generating all
+      pairs, I nees the function to do post-processing, i.e.,
+      change to lower case and stemming.
+GenWordWordRelatedness.java / compWikisimilarity.py:
+    **These two files are utilized to access the WikipediaMiner
+      web service to compute the semantic similarity between
+      word pairs. However, currently, the python code can't
+      rub while the Java code is OK.
+genKeyphraseFile.py:
+    **This function is used for formatting the keyphrase file
+      to facilitate other functions to use keyphrase files.
+TextTagger.java:
+    **This function is the interface to Stanford Postagger.
+      Note, this is just the code file. To run it, we need
+      additional "jar" package.
+compTopicSimilarity.py:
+    **This file has two classes. The first one is used for
+      converting the format of the file to the format which
+      meets the requirements of LDAGIBBS++ software. While
+      the second is used to compute the similarity between
+      all the words in each document based on the topic
+      topic distribution get from LDAGIBBS++.
+genAllWordPair.py:
+    **Generating all candidate pairs for each document and then
+      utlize WikipediaMiner to compute the semantic similarity
+      between word pairs.
+genWordmap.py:
+    **Generating word map for all cleaned words in the corpus.
+globalSetting.py:
+    **Some global variables setting, including candidate pos
+      tags for keyphrases.

@@ -14,9 +14,11 @@
 # Author: anthonylife
 # Date:   1/10/2013
 
-import re, os
+import re, os, sys
+sys.path.append('../')
 
 from globalSetting import REG_EXP, CMD, TOPIC_POS, Stopwords
+from stemmer.porterStemmer import PorterStemmer
 
 class GetTopicDis:
     ''' Call ldaGibbs++, the opensource software, to get the topic
@@ -29,9 +31,10 @@ class GetTopicDis:
         self.lda_doc = lda_doc
         self.docsuffix = docsuffix
         self.stopWords = Stopwords()
+        self.stemmer = PorterStemmer()
         self.pattern = re.compile(REG_EXP)
-        self.doclist = []
 
+        self.doclist = []
         self.getdoclist()
         self.genmodel_inputfile()
 
@@ -77,11 +80,16 @@ class GetTopicDis:
             if word == " ":
                 continue
             biparts = word.split("_")
+            # words processing (stopword, stemming, lower)
+            # ============================================
             biparts[0] = biparts[0].lower()
+            biparts[0] = self.stemmer.stem(biparts[0], 0, \
+                    len(biparts[0])-1)
             if len(biparts) == 2 and biparts[1] in TOPIC_POS:
                 if not self.stopWords.is_stopword(biparts[0])\
                         and self.pattern.match(biparts[0]):
                     save_words.append(biparts[0])
+            # ============================================
         return save_words
 
     def substr(self, candi_file):
@@ -91,13 +99,22 @@ class GetTopicDis:
 
 
 class CompTopicSimilarity:
-    '''
+    '''Getting the similarity between the pair of words
+       based on the their topic distribution. More specifically,
+       I adopt Jensen-Shannon divergence to measure their
+       similarity.
     '''
     def __init__(self):
         pass
 
+    def output_topic_dist(self):
+        pass
 
-def main():
+    def comp_similarity(self, inputfile):
+        pass
+
+
+def generatetopic():
     # files' path setting
     src_corp_dir = ["../cleanData/Hulth2003/Train/",\
             "../cleanData/Hulth2003/Test/", \
@@ -106,12 +123,23 @@ def main():
     lda_doc = "../cleanData/Hulth2003/docs.lda"
 
     # LDA model's parameters setting
-    topicnum = 50
+    topicnum = 25
     maxiter = 2000
 
     # instance of class
     topicDisGentor = GetTopicDis(src_corp_dir, lda_doc, docsuffix)
     topicDisGentor.call_lda(topicnum, maxiter)
+
+def computesimilarity():
+    pass
+
+
+def main():
+    # generate topic distribution based on LDA Gibbs Sampling.
+    generatetopic()
+
+    # compute topic similarity
+    computesimilarity()
 
 if __name__ == "__main__":
     main()
