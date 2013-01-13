@@ -1,10 +1,11 @@
-function docname = getdocname(docname_pattern)
+function docname = getdocname(docname_pattern, dir_file)
 %
 % GETDOCNAME implements the function of get documents' names in the specified 
 % directory.
 %
 % Input:
 %   docname_pattern --> it decides which will be matched
+%   dir_file        --> directory of files
 %
 % Ouput:
 %   docname --> documents' name list
@@ -15,4 +16,4 @@ function docname = getdocname(docname_pattern)
 
 file_struct = dir(docname_pattern);
 file_cell = struct2cell(file_struct);
-docname = file_cell(1,:);
+docname = strcat(dir_file, file_cell(1,:));

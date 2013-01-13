@@ -56,7 +56,7 @@ class GraphGenerator:
 
     def readwordmap(self):
         for line in open(self.wordmap_file):
-            biparts = line.strip("\r\n").split(" ")
+            biparts = line.strip("\r\n ").split(" ")
             self.corp_wordmap[biparts[0]] = int(biparts[1])
 
     # filter words based on stopwords list and character rule
