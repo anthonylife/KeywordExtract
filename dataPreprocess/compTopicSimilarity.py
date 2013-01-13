@@ -54,7 +54,7 @@ class GetTopicDis:
         for doc in self.doclist:
             docwordlist = []
             for line in open(doc):
-                line = line.strip("\n")
+                line = line.strip("\n\r ")
                 docwordlist = docwordlist + self.filterwords(line)
             docwordlist = sorted(docwordlist, reverse=False)
             wfd.write("%s\n" % " ".join(docwordlist))

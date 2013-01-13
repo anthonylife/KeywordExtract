@@ -43,3 +43,15 @@ genWordmap.py:
 globalSetting.py:
     **Some global variables setting, including candidate pos
       tags for keyphrases.
+
+
+Executation Order:
+==================
+1.Use WikipediaMiner to compute the semantic relatedness between
+two text units:
+genAllWordPair.py --> GenWordWordRelatedness.java --> cleanWiki-
+minerResult.py;
+
+2.Generate word maps and compute the topic similarity between
+text units:
+genKeyphraseFile.py --> genWordmap.py --> compTopicsSimilarity.py

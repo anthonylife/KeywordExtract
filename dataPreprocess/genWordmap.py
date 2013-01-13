@@ -60,7 +60,7 @@ class WordmapGenerator:
         temp_words = set([])
         for doc in self.doclist:
             for line in open(doc):
-                words = line.strip("\n").split(' ')
+                words = line.strip("\n\r ").split(' ')
                 for word in words:
                     biparts = word.split('_')
                     # words processing
@@ -77,17 +77,12 @@ class WordmapGenerator:
         miss_keywords = 0
         for doc in self.doclist:
             for line in open(doc):
-                textunits = line.strip('\n').split(" ")
+                textunits = line.strip('\n\r ').split(" ")
                 for textunit in textunits:
                     # words processing
                     # ================
                     textunit = textunit.lower()
                     textunit = self.stemmer.stem(textunit, 0, len(textunit)-1)
-                    if not self.pattern.match(textunit):
-                        print 'Number occur in keywords'
-                        print doc
-                        print textunit
-                        raw_input()
                     # ================
                     temp_keywords.add(textunit)
                     if not textunit in temp_words:

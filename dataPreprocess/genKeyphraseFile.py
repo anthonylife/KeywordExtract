@@ -4,14 +4,20 @@
 # This script extract the keyphrase from raw labeled
 # file and output them in new files with one phrase
 # per-line.
+# What's more, we should filter keyphrases those don't
+# occur in 'abstr' files.
+#
+# Anthor : anthonylife
+# Date   : 1/13/2013
 
 import os
 
-docsuffix = "uncontr"
-outputsuffix = "keyword"
+dockeysuffix  = "uncontr"
+outputsuffix  = "keyword"
+doctextsuffix = "abstr"
 
 def substr(candi_file):
-    if candi_file.find(docsuffix) != -1:
+    if candi_file.find(dockeysuffix) != -1:
         return True
     return False
 
@@ -21,8 +27,8 @@ if __name__ == "__main__":
                     "../../data/sourcedata/Hulth2003/Test/",\
                     "../../data/sourcedata/Hulth2003/Validation/"]
     dir_output_file = ["../cleanData/Hulth2003/Train/",\
-                     "../cleanData/Hulth2003/Test/",\
-                     "../cleanData/Hulth2003/Validation/"]
+                      "../cleanData/Hulth2003/Test/",\
+                      "../cleanData/Hulth2003/Validation/"]
     # Important variable setting
     doclist = []
 
@@ -35,20 +41,45 @@ if __name__ == "__main__":
         doclist.append(candi_files)
 
     # Parse the file and output
+    in_keyphrase_num = 0
+    out_keyphrase_num = 0
     for i, type_docs in enumerate(doclist):
         for doc in type_docs:
+            inputfile = dir_output_file[i]\
+                    +doc.split('/')[-1].split('.')[0]\
+                    +"."+doctextsuffix
             outputfile = dir_output_file[i]\
                     +doc.split('/')[-1].split('.')[0]\
                     +"."+outputsuffix
-            #print outputfile
-            #raw_input()
+
+            # read normal text (title and abstract)
+            docwordlist= []
+            for line in open(inputfile):
+                line = line.strip('\r\n ')
+                wordssegment = line.split(' ')
+                for word in wordssegment:
+                    docwordlist.append(word.split('_')[0].lower().strip(' '))
+            wholedoctext = ' '.join(docwordlist)
+            #print inputfile
+            #print wholedoctext
+
             wfd = open(outputfile, 'w')
             linelist = []
             for line in open(doc):
                 line = line.strip('\t\r\n')
                 linelist.append(line)
-            keyphrases_text = " ".join(linelist)
-            textunits = keyphrases_text.split("; ")
+            keyphrasestext = " ".join(linelist)
+            keyphrasestext = keyphrasestext.lower()
+            textunits = keyphrasestext.split("; ")
+            #print textunits
             for textunit in textunits:
-                wfd.write("%s\n" % textunit)
+                if wholedoctext.find(textunit)!=-1:
+                    #print textunit
+                    wfd.write("%s\n" % textunit)
+                    in_keyphrase_num += 1
+                else:
+                    out_keyphrase_num += 1
             wfd.close()
+            #raw_input()
+    print 'in_keyphrase_num: %d' % in_keyphrase_num
+    print 'out_keyphrase_num: %d' % out_keyphrase_num
