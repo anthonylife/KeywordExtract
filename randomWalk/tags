@@ -9,7 +9,8 @@ __init__	graphconstruct.py	/^            windowsize, docsuffix, wordmap_file):$/
 construct	graphconstruct.py	/^    def construct(self):$/;"	m	class:GraphGenerator
 filterwords	graphconstruct.py	/^    def filterwords(self, textline):$/;"	m	class:GraphGenerator
 getdoclist	graphconstruct.py	/^    def getdoclist(self):$/;"	m	class:GraphGenerator
-getdocname	getdocname.m	/^function docname = getdocname(docname_pattern)$/;"	f
+getdocname	getdocname.m	/^function docname = getdocname(docname_pattern, dir_file)$/;"	f
+getdocprefix	getdocprefix.m	/^function getdocprefix(filefullpath)$/;"	f
 loadinfo	loadinfo.m	/^function docinfo = loadinfo(dir_graph, dir_map, rep_choice, map_suffix)$/;"	f
 main	graphconstruct.py	/^def main():$/;"	f
 mapwordspair	graphconstruct.py	/^    def mapwordspair(self, ids_indoc):$/;"	m	class:GraphGenerator
@@ -17,6 +18,7 @@ mynormalize	mynormalize.m	/^function nm_data = mynormalize(data, d)$/;"	f
 numword_indoc	graphconstruct.py	/^    def numword_indoc(self, wordslist_indoc):$/;"	m	class:GraphGenerator
 output_graph	graphconstruct.py	/^    def output_graph(self, choice, graphdata, graphfile):$/;"	m	class:GraphGenerator
 output_map	graphconstruct.py	/^    def output_map(self, mapdata, mapfile):$/;"	m	class:GraphGenerator
+outputinfo	outputinfo.m	/^function outputinfo(docinfo, dir_result, result_suffix):$/;"	f
 readwordmap	graphconstruct.py	/^    def readwordmap(self):$/;"	m	class:GraphGenerator
 slidingwindow	graphconstruct.py	/^    def slidingwindow(self, cleaned_wordslist, wordsmap_indoc):$/;"	m	class:GraphGenerator
 substr	graphconstruct.py	/^    def substr(self, candi_file):$/;"	m	class:GraphGenerator

@@ -16,6 +16,8 @@ if nargin < 2,
     d = 1;
 end
 
+data = repairgraph(data);
+
 nm_const = sum(data, d);
 
 if d == 1,

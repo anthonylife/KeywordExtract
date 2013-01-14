@@ -1,4 +1,4 @@
-function outputinfo(docinfo, dir_result, result_suffix):
+function outputinfo(docinfo, dir_result, result_suffix)
 % OUTPUTINFO function outputs the pagerank value of each text unit
 % to the disk files.
 %
@@ -8,8 +8,7 @@ function outputinfo(docinfo, dir_result, result_suffix):
 
 for i=1:length(docinfo),
     docname = getdocprefix(docinfo(i).graph_file);
-    outputfile = [dir_result docname result_suffix];
-    
+    outputfile = [dir_result docname '.' result_suffix];
     wfd = fopen(outputfile, 'w');
     for j=1:length(docinfo(i).pv),
         fprintf(wfd, '%d %f\n', docinfo(i).ids_map(j), docinfo(i).pv(j));

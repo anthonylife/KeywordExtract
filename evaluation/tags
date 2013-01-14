@@ -1,0 +1,26 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+EvalResult	evalkeyphrase.py	/^class EvalResult:$/;"	c
+__init__	evalkeyphrase.py	/^            topk):$/;"	m	class:EvalResult
+cmdrun	evalkeyphrase.py	/^def cmdrun():$/;"	f
+eval_bpref	evalkeyphrase.py	/^    def eval_bpref(self):$/;"	m	class:EvalResult
+eval_fscore	evalkeyphrase.py	/^    def eval_fscore(self):$/;"	m	class:EvalResult
+eval_mrr	evalkeyphrase.py	/^    def eval_mrr(self):$/;"	m	class:EvalResult
+evaluation	evalkeyphrase.py	/^    def evaluation(self, eval_choice=None):$/;"	m	class:EvalResult
+filterwords	evalkeyphrase.py	/^    def filterwords(self, textline):$/;"	m	class:EvalResult
+getdoclist	evalkeyphrase.py	/^    def getdoclist(self, dir_file, filter_func):$/;"	m	class:EvalResult
+getkeyphrase	evalkeyphrase.py	/^    def getkeyphrase(self):$/;"	m	class:EvalResult
+getkeywords	evalkeyphrase.py	/^    def getkeywords(self, keywords_file):$/;"	m	class:EvalResult
+getkpvalue	evalkeyphrase.py	/^    def getkpvalue(self, keywords_segment, wordsvalue):$/;"	m	class:EvalResult
+getmanuallabels	evalkeyphrase.py	/^    def getmanuallabels(self):$/;"	m	class:EvalResult
+loadmap	evalkeyphrase.py	/^    def loadmap(self):$/;"	m	class:EvalResult
+localrun	evalkeyphrase.py	/^def localrun():$/;"	f
+mergekeywords	evalkeyphrase.py	/^    def mergekeywords(self, dockeywords, docwordlist, wordsvalue):$/;"	m	class:EvalResult
+substr_keywords	evalkeyphrase.py	/^    def substr_keywords(self, candi_file):$/;"	m	class:EvalResult
+substr_results	evalkeyphrase.py	/^    def substr_results(self, candi_file):$/;"	m	class:EvalResult
+substr_wholetext	evalkeyphrase.py	/^    def substr_wholetext(self, candi_file):$/;"	m	class:EvalResult
+test	evalkeyphrase.py	/^def test():$/;"	f

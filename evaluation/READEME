@@ -1,0 +1,15 @@
+Introduction to the principle of evaluation:
+============================================
+
+1. data presentation:
+---------------------
+As I hold the idea of "using matlab to implement model core
+code and use python to do data processing, evaluation and
+other tasks", I design to use files to store the value of
+text unit and regard them as input for evaluation with python
+code.
+
+2. evaluation metrics:
+----------------------
+As there is no difference between keyphrases, I adopt Preici-
+sion and Recall (F-value) to evalue the extraction results.

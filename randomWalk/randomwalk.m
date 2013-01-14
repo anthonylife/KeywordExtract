@@ -22,7 +22,7 @@
 % ---------------------------------------------------------
 alpha       = 0.85;
 maxiter     = 500;
-threshold   = 1e-5;
+threshold   = 1e-4;
 num_pre     = 1e-9;
 
 dir_graph           = '../features/randomWalk/';
@@ -55,8 +55,6 @@ for i = 1:length(docinfo),
     for j=1:maxiter,
         pv_new = alpha*pv_old*docinfo(i).graph...
                + (1-alpha)*1/node_num;
-        sum(pv_new)
-        pause;
         assert(abs(sum(pv_new)-1)<num_pre, 'Sum value of nodes invalid');
         diff = sum(abs(pv_new - pv_old));
         fprintf('Iteration: %d, difference value: %f\n', j, diff);        
@@ -74,5 +72,5 @@ outputinfo(docinfo, dir_result, result_suffix);
 
 % (6)Call python function to evaluate the final results
 % -----------------------------------------------------
-cmd = ;
-system(cmd)
+%cmd = ;
+%system(cmd)

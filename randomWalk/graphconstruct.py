@@ -61,7 +61,8 @@ class GraphGenerator:
 
     # filter words based on stopwords list and character rule
     def filterwords(self, textline):
-        save_words = []
+        stemmed_words = []
+        saved_words = []
         words = textline.split(" ")
         for word in words:
             if word == " ":
@@ -72,12 +73,13 @@ class GraphGenerator:
             biparts[0] = biparts[0].lower()
             biparts[0] = self.stemmer.stem(biparts[0], 0, \
                     len(biparts[0])-1)
-            if len(biparts) == 2 and biparts[1] in POS:
+            stemmed_words.append(biparts[0])
+            if biparts[1] in POS:
                 if not self.stopWords.is_stopword(biparts[0])\
                         and self.pattern.match(biparts[0]):
-                    save_words.append(biparts[0])
+                    saved_words.append(biparts[0])
             # ============================================
-        return save_words
+        return stemmed_words, saved_words
 
     # graph construction
     # strategy: 1.filter words accroding to POS tags;
@@ -91,14 +93,17 @@ class GraphGenerator:
                     + self.mapfile_suffix
 
             cleaned_wordslist = []
+            stemmed_wordslist = []
             for line in open(doc):
-                line = line.strip('\n')
-                cleaned_wordslist = cleaned_wordslist + self.filterwords(line)
+                line = line.strip('\n\r ')
+                stemmed_words, cleaned_words = self.filterwords(line)
+                cleaned_wordslist = cleaned_wordslist + cleaned_words
+                stemmed_wordslist = stemmed_wordslist + stemmed_words
             wordsmap_indoc = self.numword_indoc(cleaned_wordslist)
             #print wordsmap_indoc
             pairids = self.mapwordspair(wordsmap_indoc)
             pairids = sorted(pairids, key=lambda x: x[0])
-            dense_graph = self.slidingwindow(cleaned_wordslist, wordsmap_indoc)
+            dense_graph = self.slidingwindow(stemmed_wordslist, wordsmap_indoc)
             self.output_graph('dense', dense_graph, output_graphfile)
             self.output_graph('sparse', dense_graph, output_graphfile)
             self.output_map(pairids, output_mapfile)
@@ -109,22 +114,21 @@ class GraphGenerator:
             pairids.append([ids_indoc[key], self.corp_wordmap[key]])
         return pairids
 
-    def slidingwindow(self, cleaned_wordslist, wordsmap_indoc):
+    def slidingwindow(self, stemmed_wordslist, wordsmap_indoc):
         dense_graph = np.array([0.0 for i in range(len(wordsmap_indoc)\
                 *len(wordsmap_indoc))])
         dense_graph = dense_graph.reshape(len(wordsmap_indoc), len(wordsmap_indoc))
 
-        for i, word in enumerate(cleaned_wordslist):
-            sliding_text = cleaned_wordslist[max(0, i-self.windowsize/2):\
-                     min(len(cleaned_wordslist), i+self.windowsize/2+1)]
-            for j in range(len(sliding_text)):
-                if cleaned_wordslist[i] == sliding_text[j]:
-                    continue
-                #print cleaned_wordslist[i]
-                #print sliding_text[j]
-                #raw_input()
-                dense_graph[wordsmap_indoc[cleaned_wordslist[i]]-1,\
-                        wordsmap_indoc[sliding_text[j]]-1] += 1
+        for i, word in enumerate(stemmed_wordslist):
+            if stemmed_wordslist[i] in wordsmap_indoc:
+                sliding_text = stemmed_wordslist[max(0, i-self.windowsize):\
+                        min(len(stemmed_wordslist), i+self.windowsize+1)]
+                for j in range(len(sliding_text)):
+                    if stemmed_wordslist[i] == sliding_text[j]:
+                        continue
+                    if sliding_text[j] in wordsmap_indoc:
+                        dense_graph[wordsmap_indoc[stemmed_wordslist[i]]-1,\
+                                wordsmap_indoc[sliding_text[j]]-1] += 1
         return dense_graph
 
     def numword_indoc(self, wordslist_indoc):
