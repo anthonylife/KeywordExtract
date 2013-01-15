@@ -11,6 +11,7 @@ import os, sys
 sys.path.append('../')
 
 from stemmer.porterStemmer import PorterStemmer
+from dataPreprocess.globalSetting import ADJ_POS, NOUN_POS
 
 class EvalResult:
     '''This class is responsible to do evaluation
@@ -19,7 +20,7 @@ class EvalResult:
     def __init__(self, words_map_file, dir_keywords_file,\
             dir_results_file, dir_wholetext_file,\
             keywords_suffix, results_suffix, wholetext_suffix,\
-            topk):
+            kwnum_suffix, topk):
         self.words_map_file = words_map_file
         self.dir_keywords_file = dir_keywords_file
         self.dir_results_file = dir_results_file
@@ -27,14 +28,17 @@ class EvalResult:
         self.keywords_suffix = keywords_suffix
         self.results_suffix = results_suffix
         self.wholetext_suffix = wholetext_suffix
+        self.kwnum_suffix = kwnum_suffix
         self.topk = topk
 
         self.stemmer = PorterStemmer()
         self.wordsmap = self.loadmap()
         self.doclist = self.getdoclist(self.dir_wholetext_file,\
                 self.substr_wholetext)
+
         self.corpkeyphrase = {}
         self.getkeyphrase()
+        self.manualkwnum = {}
         self.manuallabels = {}
         self.getmanuallabels()
 
@@ -59,6 +63,10 @@ class EvalResult:
         if candi_file.find(self.wholetext_suffix) != -1:
             return True
         return False
+    def substr_kwnum(self, candi_file):
+        if candi_file.find(self.kwnum_suffix) != -1:
+            return True
+        return False
 
     def loadmap(self):
         wordsmap = {}
@@ -75,25 +83,39 @@ class EvalResult:
             #print results_file
             #print doc
             docwordlist = []
+            docwordtags = []
             for line in open(doc):
                 line = line.strip("\n\r ")
-                docwordlist = docwordlist + self.filterwords(line)
+                save_words, save_postags = self.filterwords(line)
+                docwordlist = docwordlist + save_words
+                docwordtags = docwordtags + save_postags
 
             dockeywords, sortedwords, wordsvalue = \
                     self.getkeywords(results_file)
             #print sortedwords
             kp_num, dockeyphrase = self.mergekeywords(dockeywords,\
-                    docwordlist, wordsvalue)
+                    docwordlist, wordsvalue, docwordtags)
             #print dockeyphrase
             #print dockeyphrase
             #raw_input()
+            dockeyphrase = sorted(dockeyphrase.items(), \
+                    key=lambda x:x[1], reverse=True)
+            dockeyphrase = map(lambda x:x[0], dockeyphrase)
             self.corpkeyphrase[doc.split('/')[-1].split('.')[0]] = \
-                    set(dockeyphrase.keys())
+                    set(dockeyphrase[0:int(10.0*len(dockeyphrase)/10+1)+1])
 
     def getmanuallabels(self):
         doclist = self.getdoclist(self.dir_keywords_file,\
+                self.substr_kwnum)
+        for doc in doclist:
+            docname = doc.split('/')[-1].split('.')[0]
+            manual_kwnum = int(open(doc).readline().strip('\n'))
+            self.manualkwnum[docname] = manual_kwnum
+
+        doclist = self.getdoclist(self.dir_keywords_file,\
                 self.substr_keywords)
         for doc in doclist:
+            docname = doc.split('/')[-1].split('.')[0]
             keyphrase_set = set([])
             for line in open(doc):
                 words_id =[]
@@ -101,7 +123,7 @@ class EvalResult:
                 for word in words:
                     word = word.lower()
                     word = self.stemmer.stem(word, 0, \
-                    len(word)-1)
+                        len(word)-1)
                     if word not in self.wordsmap:
                         print 'Invalid keyword'
                         sys.exit(0)
@@ -109,10 +131,10 @@ class EvalResult:
                     words_id.append(word_id)
                 keyphrase = '_'.join(words_id)
                 keyphrase_set.add(keyphrase)
-            self.manuallabels[doc.split('/')[-1].split('.')[0]] = \
-                    keyphrase_set
+            self.manuallabels[docname] = keyphrase_set
 
-    def mergekeywords(self, dockeywords, docwordlist, wordsvalue):
+    def mergekeywords(self, dockeywords, docwordlist, wordsvalue,\
+            docwordtags):
         dockeyphrase = {}
         kp_num = 0
         kp_tag = False
@@ -127,12 +149,16 @@ class EvalResult:
                     kp_end = i if word not in dockeywords else i+1
                     kp_tag = False
                     keywords_segment = docwordlist[kp_start:kp_end]
-                    keyphrase = '_'.join(keywords_segment)
-                    keyphrase_val = self.getkpvalue(keywords_segment,\
-                            wordsvalue)
-                    if keyphrase not in dockeyphrase:
-                        dockeyphrase[keyphrase] = keyphrase_val
-                        kp_num += 1
+                    keywords_postags = docwordtags[kp_start:kp_end]
+                    keywords_segment = self.postag_verify(keywords_segment,\
+                            keywords_postags)
+                    if keywords_segment:
+                        keyphrase = '_'.join(keywords_segment)
+                        keyphrase_val = self.getkpvalue(keywords_segment,\
+                                wordsvalue)
+                        if keyphrase not in dockeyphrase:
+                            dockeyphrase[keyphrase] = keyphrase_val
+                            kp_num += 1
         return kp_num, dockeyphrase
 
     def getkpvalue(self, keywords_segment, wordsvalue):
@@ -154,12 +180,13 @@ class EvalResult:
         #raw_input()
         wordsvalue = dict(tempwords)
         wordsnum = len(sortedwords)
-        keywordsnum = int(1.0*wordsnum/3)
+        keywordsnum = int(1.0*wordsnum)
         dockeywords = set(sortedwords[0:keywordsnum])
         return dockeywords, sortedwords, wordsvalue
 
     def filterwords(self, textline):
         save_words = []
+        save_postags = []
         words = textline.split(" ")
         for word in words:
             biparts = word.split("_")
@@ -174,10 +201,38 @@ class EvalResult:
             # ============================================
             if biparts[0] not in self.wordsmap:
                 save_words.append('-1')
+                save_postags.append(biparts[1])
             else:
                 save_words.append(self.wordsmap[biparts[0]])
+                save_postags.append(biparts[1])
+        return save_words, save_postags
+
+    # filter candidate keyphrase with invalid postag sequence
+    def postag_verify(self, save_words, save_postags):
+        #if len(save_words) == 1 and save_postags[0] in ADJ_POS:
+        #    return None
         return save_words
 
+    '''def postag_verify(self, save_words, save_postags):
+        state = 0
+        end_idx = -1
+        for i, postag in enumerate(save_postags):
+            if state == 0:
+                if postag in ADJ_POS:
+                    continue
+                elif postag in NOUN_POS:
+                    state = 1
+            elif state == 1:
+                if postag in ADJ_POS:
+                    end_idx = i-1
+                elif postag in NOUN_POS:
+                    end_idx = i
+                    continue
+        if end_idx == -1:
+            return None
+        else:
+            return save_words[0:end_idx+1]
+'''
     def evaluation(self, eval_choice=None):
         if eval_choice == 'F-score':
             precision, recall, f_score = self.eval_fscore()
@@ -206,7 +261,11 @@ class EvalResult:
         for doc in self.corpkeyphrase.keys():
             ext_kp = self.corpkeyphrase[doc]
             manual_kp = self.manuallabels[doc]
-            total_accnum += len(manual_kp)
+            #print ext_kp
+            #print manual_kp
+            #raw_input()
+            #total_accnum += len(manual_kp)
+            total_accnum += self.manualkwnum[doc]
             ext_num += len(ext_kp)
             ext_accnum += len(manual_kp&ext_kp)
         print 'Manual annotated keyphrases: %d' % total_accnum
@@ -238,11 +297,12 @@ def localrun():
     keywords_suffix = 'keyword'
     results_suffix = 'keyword.pv'
     wholetext_suffix = 'abstr'
-    topk = 12
+    kwnum_suffix = 'integral.num'
+    topk = 0
 
     evalResult = EvalResult(words_map_file, dir_keywords_file,\
             dir_results_file, dir_wholetext_file, keywords_suffix,\
-            results_suffix, wholetext_suffix, topk)
+            results_suffix, wholetext_suffix, kwnum_suffix, topk)
     evalResult.evaluation('F-score')
 
 # run this class by terminal commander
@@ -254,11 +314,12 @@ def cmdrun():
     keywords_suffix = sys.argv[5]
     results_suffix = sys.argv[6]
     wholetext_suffix = sys.argv[7]
-    topk = int(sys.argv[8])
+    kwnum_suffix = sys.artv[8]
+    topk = int(sys.argv[9])
 
     evalResult = EvalResult(words_map_file, dir_keywords_file,\
             dir_results_file, dir_wholetext_file, keywords_suffix,\
-            results_suffix, wholetext_suffix, topk)
+            results_suffix, wholetext_suffix, kwnum_suffix, topk)
     evalResult.evaluation('F-score')
 
 if __name__ == '__main__':
