@@ -1,0 +1,36 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+FeatureGenerator	genFeatures.py	/^class FeatureGenerator():$/;"	c
+__init__	genFeatures.py	/^            words_map_file):$/;"	m	class:FeatureGenerator
+fullpairgenerator	fullpairgenerator.m	/^function datapairs = fullpairgenerator(pos_ins, neg_ins)$/;"	f
+fullpairgenerator	partialpairgenerator.m	/^function datapairs = fullpairgenerator(pos_ins, neg_ins)$/;"	f
+getaucvalue	getaucvalue.m	/^function auc = getaucvalue(docinfo, model)$/;"	f
+getdoclist	genFeatures.py	/^    def getdoclist(self, substr_func, dir_file):$/;"	m	class:FeatureGenerator
+getdocname	getdocname.m	/^function docname = getdocname(docname_pattern, dir_file)$/;"	f
+getdocprefix	getdocprefix.m	/^function docname = getdocprefix(filefullpath)$/;"	f
+getmanuallabels	genFeatures.py	/^    def getmanuallabels(self):$/;"	m	class:FeatureGenerator
+getnodevalue	getnodevalue.m	/^function node_value=getnodevalue(features,idx,w,sumvalue)$/;"	f
+getobjdrvalue	getobjdrvalue.m	/^function objdrvalue = getobjdrvalue(features, tr_pair, model, sumvalue)$/;"	f
+getobjerror	getobjerror.m	/^function totalerror = getobjerror(docinfo, model)$/;"	f
+getsumvalue	getsumvalue.m	/^function sumvalue = getsumvalue(features, model)$/;"	f
+gettrainpair	gettrainpair.m	/^function tr_pairs = gettrainpair(docinfo, strategy)    $/;"	f
+loaddoctext	genFeatures.py	/^    def loaddoctext(self):$/;"	m	class:FeatureGenerator
+loadinfo	loadinfo.m	/^function docinfo = loadinfo(dirdoc, datachoice)$/;"	f
+loadmap	genFeatures.py	/^    def loadmap(self):$/;"	m	class:FeatureGenerator
+main	genFeatures.py	/^def main():$/;"	f
+minmax	genFeatures.py	/^    def minmax(self, features):$/;"	m	class:FeatureGenerator
+mkdocfeatures	genFeatures.py	/^    def mkdocfeatures(self):$/;"	m	class:FeatureGenerator
+norm	genFeatures.py	/^    def norm(self, features):$/;"	m	class:FeatureGenerator
+normalization	genFeatures.py	/^    def normalization(self, features, method):$/;"	m	class:FeatureGenerator
+outputdocfeatures	genFeatures.py	/^    def outputdocfeatures(self):$/;"	m	class:FeatureGenerator
+outputinfo	outputinfo.m	/^function outputinfo(docinfo, model, dirdoc)$/;"	f
+rtime	rtime.m	/^function s = rtime(t)$/;"	f
+sigmoid	sigmoid.m	/^function f_x = sigmoid(x, w)$/;"	f
+sigmoid_deriva	sigmoid_deriva.m	/^function deriva_value = sigmoid_deriva(w, x)$/;"	f
+substr_manualkp	genFeatures.py	/^    def substr_manualkp(self, candi_file):$/;"	m	class:FeatureGenerator
+substr_text	genFeatures.py	/^    def substr_text(self, candi_file):$/;"	m	class:FeatureGenerator
+test	genFeatures.py	/^def test():$/;"	f
